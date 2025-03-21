@@ -19,3 +19,10 @@ def get_github_user(username):
         'seguidores': data.get('followers'),
         'quantidade_repositorios': data.get('public_repos'),
     }, 200
+
+    def get_user_repos(username):
+        url = 'https://api.github.com/users/{username}/repos'
+        response = requests.get(url)
+
+        if response.status_code == 404:
+            return {'error': 'Usuário não encontrado'}
