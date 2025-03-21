@@ -25,4 +25,13 @@ def get_github_user(username):
         response = requests.get(url)
 
         if response.status_code == 404:
-            return {'error': 'Usuário não encontrado'}
+            return {'error': 'Usuário não encontrado'}, 404
+        
+        repos = response.json()
+        repo_list = [{
+            'nome': repo['name'],
+            'nome_completo': repo['full_name'],
+            'url': repo['html_url']
+        } for repo in repos]
+
+        return repo_List, 200
