@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  title: Users API
+  description: API para buscar informações de usuários do GitHub, incluindo dados pessoais e repositórios.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Servidor de desenvolvimento local
+
+paths:
+  /users/:
+    get:
+      summary: Retorna erro se o nome do usuário não for fornecido.
+      description: Retorna um erro 400 caso o nome de usuário não seja informado.
+      responses:
+        '400':
+          description: Usuário não informado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Usuario nao informado"
+  /users/{username}:
+    get:
+      summary: Retorna informações de um usuário do GitHub
+      description: Busca informações detalhadas de um usuário no GitHub, incluindo nome, avatar, email, bio, seguidores e repositórios.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          description: O nome de usuário no GitHub.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Informações do usuário com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nome:
+                    type: string
+                    example: "User Name"
+                  avatar_url:
+                    type: string
+                    example: "https://avatar.com"
+                  email:
+                    type: string
+                    example: "username@gmail.com"
+                  bio:
+                    type: string
+                    example: "User bio"
+                  seguidores:
+                    type: integer
+                    example: 10
+                  quantidade_repositorios:
+                    type: integer
+                    example: 2
+                  repositorios:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        nome:
+                          type: string
+                          example: "repo1"
+                        nome_completo:
+                          type: string
+                          example: "user/repo1"
+                        url:
+                          type: string
+                          example: "https://github.com/user/repo1"
+        '404':
+          description: Usuário não encontrado no GitHub
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Usuario nao encontrado"
+        '500':
+          description: Erro ao acessar a API do GitHub
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao acessar API do GitHub: <mensagem de erro>"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "User Name"
+        avatar_url:
+          type: string
+          example: "https://avatar.com"
+        email:
+          type: string
+          example: "username@gmail.com"
+        bio:
+          type: string
+          example: "User bio"
+        seguidores:
+          type: integer
+          example: 10
+        repositorios:
+          type: array
+          items:
+            type: object
+            properties:
+              nome:
+                type: string
+                example: "repo1"
+              nome_completo:
+                type: string
+                example: "user/repo1"
+              url:
+                type: string
+                example: "https://github.com/user/repo1"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Usuario nao encontrado"
