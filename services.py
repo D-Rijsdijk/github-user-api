@@ -2,7 +2,7 @@ import requests
 
 def get_github_user(username):
     if not username: 
-        return {'error': 'Usário não informado'}, 400 
+        return {'error': 'Usuário não informado'}, 400 
     
     url = f'https://api.github.com/users/{username}'
     response = requests.get(url)
