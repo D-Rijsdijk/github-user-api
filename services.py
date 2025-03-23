@@ -29,17 +29,28 @@ def get_github_user(username):
         return {'error': f'Erro ao acessar API do GitHub: {str(req_err)}'}, 500
 
 def get_user_repos(username):
+    if not username:
+        return {'error': 'Usuario nao informado'}, 400
+
     url = f'https://api.github.com/users/{username}/repos'
-    response = requests.get(url)
 
-    if response.status_code == 404:
-        return {'error': 'Usuario nao encontrado'}, 404
-        
-    repos = response.json()
-    repo_list = [{
-        'nome': repo['name'],
-        'nome_completo': repo['full_name'],
-        'url': repo['html_url']
-    } for repo in repos]
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Levanta exceção para erros HTTP 4xx e 5xx
+        repos = response.json()
 
-    return repo_list, 200
+        repo_list = [{
+            'nome': repo['name'],
+            'nome_completo': repo['full_name'],
+            'url': repo['html_url']
+        } for repo in repos]
+
+        return repo_list, 200
+
+    except requests.exceptions.HTTPError as http_err:
+        if response.status_code == 404:
+            return {'error': 'Usuario nao encontrado'}, 404
+        return {'error': f'Erro HTTP: {http_err}'}, response.status_code
+
+    except requests.exceptions.RequestException as req_err:
+        return {'error': f'Erro ao acessar API do GitHub: {str(req_err)}'}, 500
