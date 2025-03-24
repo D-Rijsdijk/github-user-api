@@ -8,21 +8,6 @@ servers:
     description: Servidor de desenvolvimento local
 
 paths:
-  /users/:
-    get:
-      summary: Retorna erro se o nome do usuário não for fornecido.
-      description: Retorna um erro 400 caso o nome de usuário não seja informado.
-      responses:
-        '400':
-          description: Usuário não informado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Usuario nao informado"
   /users/{username}:
     get:
       summary: Retorna informações de um usuário do GitHub
